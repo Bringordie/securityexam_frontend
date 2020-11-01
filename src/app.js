@@ -1,63 +1,34 @@
 import React, { useState, useEffect } from "react";
 import { Switch, Route, NavLink, useHistory } from "react-router-dom";
 import jwt_decode from "jwt-decode";
-import "react-datepicker/dist/react-datepicker.css";
 import UserRegistrationPage from "./userregister";
+import UserLoginPage from "./userlogin";
 
 
 function App({ apiFetchFacade, authFacade }) {
-  let token = localStorage.getItem("jwtToken");
+  let token = localStorage.getItem("x-access-token");
 
   const [loggedIn, setLoggedIn] = useState(
     token !== undefined && token !== null
   );
-  const [role, setRole] = useState("");
+
   const history = useHistory();
 
   const logout = () => {
     authFacade.logout();
     setLoggedIn(false);
-    updateRoles();
   };
 
-  const login = (user, pass) => {
-    authFacade
-      .login(user, pass)
-      .then((res) => setLoggedIn(true))
-      .then((res) => {
-        updateRoles();
-        history.push("/");
-      })
-      .catch((res) =>
-        alert("Status code : " + res.status + " Wrong username or password.")
-      );
+  const setLogin = () => {
+    setLoggedIn(true);
   };
 
-  function updateRoles() {
-    token = localStorage.getItem("jwtToken");
-    if (token) {
-      var decoded = jwt_decode(token);
-      setRole(decoded.roles);
-    } else {
-      setRole(null);
-    }
-  }
-
-  useEffect(() => {
-    // eslint-disable-next-line
-    token = localStorage.getItem("jwtToken");
-    if (token) {
-      var decoded = jwt_decode(token);
-      setLoggedIn(true);
-      setRole(decoded.roles);
-    }
-  }, []);
 
   return (
     <div className="App">
-      <Header loggedIn={loggedIn} role={role} logout={logout} />
+      <Header loggedIn={loggedIn} logout={logout} token={token} setLogin={setLogin} />
 
-      {loggedIn && role && role.includes("user") && (
+      {loggedIn  && (
         <Switch>
           <Route exact path="/">
             <Home history={history} token={token} />
@@ -75,15 +46,17 @@ function App({ apiFetchFacade, authFacade }) {
               <Home history={history} token={token} />
             </Route>
             <Route path="/login">
-              <LogIn login={login} />
+            <UserLoginPage
+                apiFetchFacade={apiFetchFacade}
+                authFacade={authFacade}
+                setLogin={setLogin}
+              />
             </Route>
             <Route path="/registration">
               <UserRegistrationPage
                 apiFetchFacade={apiFetchFacade}
-                loginCallback={login}
               />
             </Route>
-
             <Route>
               <NoMatch />
             </Route>
@@ -94,34 +67,8 @@ function App({ apiFetchFacade, authFacade }) {
   );
 }
 
-function LogIn({ login }) {
-  const init = { username: "", password: "" };
-  const [loginCredentials, setLoginCredentials] = useState(init);
 
-  const performLogin = (evt) => {
-    evt.preventDefault();
-    login(loginCredentials.username, loginCredentials.password);
-  };
-  const onChange = (evt) => {
-    setLoginCredentials({
-      ...loginCredentials,
-      [evt.target.id]: evt.target.value,
-    });
-  };
-
-  return (
-    <div>
-      <h2>Login</h2>
-      <form onChange={onChange}>
-        <input placeholder="User Name" id="username" />
-        <input placeholder="Password" id="password" />
-        <button onClick={performLogin}>Login</button>
-      </form>
-    </div>
-  );
-}
-
-function Header({ role, loggedIn, logout }) {
+function Header({ loggedIn, logout, token }) {
   return (
     <div>
       <ul className="header">
@@ -130,23 +77,14 @@ function Header({ role, loggedIn, logout }) {
             Home
           </NavLink>
         </li>
-        {role && role.includes("admin") && (
-          <>
-            {/* <li>
-              <NavLink activeClassName="active" to="/moviecount">
-                Movies With Count
-              </NavLink>
-            </li> */}
-          </>
-        )}
-        {loggedIn && (
+        {loggedIn && token &&(
           <li>
             <NavLink activeClassName="active" onClick={logout} to="/login">
               Logout
             </NavLink>
           </li>
         )}
-        {!loggedIn && (
+        {!token && (
           <>
             <li>
               <NavLink activeClassName="active" to="/login">
@@ -186,7 +124,7 @@ function Home(props) {
     if (token !== null && token !== undefined) {
       var decoded = jwt_decode(token);
       setUsername(Capatialize(decoded.username));
-      setRole(decoded.roles);
+      setRole((decoded.role));
     }
   }, [token]);
   return (
@@ -195,13 +133,13 @@ function Home(props) {
         <div>
           <h2>Admin page</h2>
         </div>
-      )}
-      {role !== "" && !role.includes("admin") && (
+      )} 
+      {role && role.includes("user") && (
         <div>
           <h2>Welcome {username}</h2>
         </div>
       )}
-      {role === "" && (
+      {token === null && (
         <div>
           <h2>Welcome. Please log in.</h2>
         </div>

@@ -1,4 +1,4 @@
-import { LoginURL } from "./settings";
+import { LoginURLUser } from "./settings";
 
 function handleHttpErrors(res) {
   if (!res.ok) {
@@ -10,18 +10,17 @@ function handleHttpErrors(res) {
 function authFacade() {
   /* Insert utility-methods from a latter step (d) here (REMEMBER to uncomment in the returned object when you do)*/
   const setToken = (token) => {
-    localStorage.setItem("jwtToken", token);
+    localStorage.setItem("x-access-token", token);
   };
   const getToken = () => {
-    return localStorage.getItem("jwtToken");
+    return localStorage.getItem("x-access-token");
   };
   const loggedIn = () => {
     const loggedIn = getToken() != null;
     return loggedIn;
   };
   const logout = () => {
-    localStorage.removeItem("jwtToken");
-    localStorage.removeItem("username");
+    localStorage.removeItem("x-access-token");
   };
 
   const login = (user, password) => {
@@ -29,8 +28,7 @@ function authFacade() {
       username: user,
       password: password,
     });
-    localStorage.setItem("username", user);
-    return fetch(LoginURL(), options)
+    return fetch(LoginURLUser(), options)
       .then(handleHttpErrors)
       .then((res) => {
         setToken(res.token);

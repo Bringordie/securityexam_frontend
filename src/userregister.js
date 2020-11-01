@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { UserRegistrationURL } from "./settings";
+import UserLoginPage from "./userlogin";
 
 export default function UserRegistrationPage({
-  apiFetchFacade,
-  loginCallback,
+  apiFetchFacade
 }) {
   let blankUser = { username: "", password: "" };
   const [user, setUser] = useState({ ...blankUser });
@@ -20,7 +20,7 @@ export default function UserRegistrationPage({
     apiFetchFacade()
       .createUser(url)
       .then((data) => {
-        loginCallback(user.username, user.password);
+        UserLoginPage.loginCallback(user.username, user.password);
       })
       .catch((err) => {
         setResponse(err.status);
