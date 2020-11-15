@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
+import { TestTest } from "./settings";
 
 
 
@@ -8,8 +9,8 @@ import { useHistory } from "react-router-dom";
     const [loginCredentials, setLoginCredentials] = useState(init);
     const history = useHistory();
 
-    const login = (user, pass) => {
-        authFacade
+    const login = (user, pass)  => {
+        authFacade 
           .login(user, pass)
           //This line can probably be removed.
           .then((res) => setLogin)
@@ -18,10 +19,20 @@ import { useHistory } from "react-router-dom";
           })
           .catch((res) =>
             alert("Status code : " + res.status + " Wrong username or password.")
+            
           );
-      };
+      //   await apiFetchFacade()
+      // .getApiFetch(TestTest())
+      // .then((data) => {
+      //   console.log(data)
+      // })
+      // .catch((err) => {
+      //   console.log(err)
+      // });
+    }
   
     const performLogin = (evt) => {
+      
       evt.preventDefault();
       login(loginCredentials.username, loginCredentials.password);
     };
@@ -33,7 +44,9 @@ import { useHistory } from "react-router-dom";
     };
   
     return (
+      
       <div>
+        
         <h2>Login</h2>
         <form onChange={onChange}>
           <input placeholder="User Name" id="username" />

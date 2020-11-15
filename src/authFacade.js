@@ -23,7 +23,9 @@ function authFacade() {
     localStorage.removeItem("x-access-token");
   };
 
+
   const login = (user, password) => {
+
     const options = makeOptions("POST", true, {
       username: user,
       password: password,
@@ -39,8 +41,8 @@ function authFacade() {
     var opts = {
       method: method,
       headers: {
-        "Content-type": "application/json",
-        Accept: "application/json",
+        "Content-Type": "application/json",
+        "Accept": "application/json",
       },
     };
     if (addToken && loggedIn()) {
@@ -51,8 +53,26 @@ function authFacade() {
     }
     return opts;
   };
+
+  const createUserOptions = (method, addToken, body) => {
+    var opts = {
+      method: method,
+      headers: {
+        //"Content-Type": "multipart/form-data",
+        "Accept": "application/json",
+      },
+    };
+    if (addToken && loggedIn()) {
+      opts.headers["x-access-token"] = getToken();
+    }
+    if (body) {
+      opts.body = body;
+    }
+    return opts;
+  };
   return {
     makeOptions,
+    createUserOptions,
     setToken,
     getToken,
     loggedIn,

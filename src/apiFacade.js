@@ -10,6 +10,7 @@ function apiFetchFacade() {
 
   const getApiFetch = (url) => {
     const options = facade.makeOptions("GET", true);
+    //const options = facade("GET", true);
     return fetch(url, options).then(handleHttpErrors);
   };
 
@@ -18,8 +19,8 @@ function apiFetchFacade() {
     return fetch(url, options).then(handleHttpErrors);
   };
 
-  const createUser = (url) => {
-    const options = facade.makeOptions("POST", true);
+  const createUser = (url, body) => {
+    const options = facade.createUserOptions("POST", true, body);
     return fetch(url, options).then(handleHttpErrors);
   };
 

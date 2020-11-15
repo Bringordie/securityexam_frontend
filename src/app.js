@@ -3,6 +3,8 @@ import { Switch, Route, NavLink, useHistory } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import UserRegistrationPage from "./userregister";
 import UserLoginPage from "./userlogin";
+import UserHomePage from "./userhome";
+import FriendsPage from "./friends";
 
 
 function App({ apiFetchFacade, authFacade }) {
@@ -31,7 +33,17 @@ function App({ apiFetchFacade, authFacade }) {
       {loggedIn  && (
         <Switch>
           <Route exact path="/">
-            <Home history={history} token={token} />
+            <Frontpage history={history} token={token} />
+          </Route>
+          <Route exact path="/home">
+            <UserHomePage 
+            apiFetchFacade={apiFetchFacade}
+            />
+          </Route>
+          <Route exact path="/friends">
+            <FriendsPage 
+            apiFetchFacade={apiFetchFacade}
+            />
           </Route>
           <Route>
             <NoMatch />
@@ -43,7 +55,7 @@ function App({ apiFetchFacade, authFacade }) {
         <>
           <Switch>
             <Route exact path="/">
-              <Home history={history} token={token} />
+              <Frontpage history={history} token={token} />
             </Route>
             <Route path="/login">
             <UserLoginPage
@@ -72,17 +84,29 @@ function Header({ loggedIn, logout, token }) {
   return (
     <div>
       <ul className="header">
-        <li>
+        {loggedIn && token &&(
+          <>
+          <li>
           <NavLink exact activeClassName="active" to="/">
+            Frontpage
+          </NavLink>
+        </li>
+          <li>
+          <NavLink exact activeClassName="active" to="/home">
             Home
           </NavLink>
         </li>
-        {loggedIn && token &&(
+        <li>
+          <NavLink exact activeClassName="active" to="/friends">
+            Friends
+          </NavLink>
+        </li>
           <li>
             <NavLink activeClassName="active" onClick={logout} to="/login">
               Logout
             </NavLink>
           </li>
+          </>
         )}
         {!token && (
           <>
@@ -115,7 +139,7 @@ function Capatialize(prop) {
   return prop.charAt(0).toUpperCase() + prop.slice(1);
 }
 
-function Home(props) {
+function Frontpage(props) {
   const token = props.token;
   const [username, setUsername] = useState("");
   const [role, setRole] = useState("");
