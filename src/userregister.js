@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { UserRegistrationURL } from "./settings";
 import UserLoginPage from "./userlogin";
+import PASSWORD_PATTERN from "./passwordPolicy"
 
 export default function UserRegistrationPage({
   apiFetchFacade
@@ -9,7 +10,7 @@ export default function UserRegistrationPage({
   const [user, setUser] = useState({ ...blankUser });
   const [selectedFile, setSelectedFile] = useState(null);
   const [response, setResponse] = useState("");
-  const PASSWORD_PATTERN = new RegExp("^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{8,})");
+  //const PASSWORD_PATTERN = new RegExp("^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{8,})");
 
   function changeHandler(event) {
     const { id, value } = event.target;

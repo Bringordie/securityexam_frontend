@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { ChangePWURL } from "./settings";
+import PASSWORD_PATTERN from "./passwordPolicy"
 
 function PasswordChange({ apiFetchFacade }) {
   const [newPass, setNewPass] = useState("");
@@ -29,11 +30,20 @@ function PasswordChange({ apiFetchFacade }) {
     setUser({ ...user, [id]: value });
   }
 
+  function password_validate(pass) {
+    return PASSWORD_PATTERN.test(pass);
+}
+
   const handleSubmit = (event) => {
     event.preventDefault();
     if (newPass !== newPass2) {
       setErrMsg("The two password entries do not match.");
       return;
+    }
+
+    if (!password_validate(user.password)) {
+        setErrMsg("Your password did not meet the requirements");
+        return;
     }
 
     const body = {

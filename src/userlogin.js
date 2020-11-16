@@ -39,8 +39,8 @@ import { useHistory } from "react-router-dom";
         
         <h2>Login</h2>
         <form onChange={onChange}>
-          <input placeholder="User Name" id="username" />
-          <input placeholder="Password" id="password" />
+          <input placeholder="User Name" id="username" required/>
+          <input placeholder="Password" id="password" required/>
           <button onClick={performLogin}>Login</button>
         </form>
       </div>
