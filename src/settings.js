@@ -25,7 +25,7 @@ export function ChangePWURL() {
   if (PROD) {
     //return "https://cphfb.codes/sem4/api/register/changepw";
   }
-  return "http://localhost:8080/sem4/api/register/changepw";
+  return "http://localhost:8080/sem4/api/login/reset/password";
 }
 
 

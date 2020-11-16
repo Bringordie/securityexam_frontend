@@ -7,6 +7,7 @@ import UserLoginPage from "./userlogin";
 import UserHomePage from "./userhome";
 import FriendsPage from "./friends";
 import apiFetchFacade from "./apiFacade";
+import PasswordChange from "./changepw";
 
 
 function App({ apiFetchFacade, authFacade }) {
@@ -71,6 +72,9 @@ function App({ apiFetchFacade, authFacade }) {
                 apiFetchFacade={apiFetchFacade}
               />
             </Route>
+            <Route path="/changepw">
+                <PasswordChange apiFetchFacade={apiFetchFacade} />
+              </Route>
             <Route>
               <NoMatch />
             </Route>
@@ -122,6 +126,11 @@ function Header({ loggedIn, logout, token }) {
                 Register
               </NavLink>
             </li>
+            <li>
+                <NavLink activeClassName="active" to="/changepw">
+                  Change Password
+                </NavLink>
+              </li>
           </>
         )}
       </ul>

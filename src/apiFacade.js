@@ -29,7 +29,7 @@ function apiFetchFacade() {
     return fetch(url, options).then(handleHttpErrors);
   };
 
-  const putApiCallWBody = (Body, url) => {
+  const putApiCallWBody = (url, Body) => {
     const options = facade.makeOptions("PUT", true, Body);
     return fetch(url, options).then(handleHttpErrors);
   };
