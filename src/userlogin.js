@@ -1,8 +1,5 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { TestTest } from "./settings";
-
-
 
   export default function LogIn({ apiFetchFacade, authFacade, setLogin }) {
     const init = { username: "", password: "" };
@@ -13,22 +10,15 @@ import { TestTest } from "./settings";
         authFacade 
           .login(user, pass)
           //This line can probably be removed.
-          .then((res) => setLogin)
-          .then((res) => {
+          //.then((res) => setLogin)
+          .then(() => {
             history.push("/");
+            //A temp fix so the user dosen't need to F5
+            history.go(0)
           })
           .catch((res) =>
             alert("Status code : " + res.status + " Wrong username or password.")
-            
           );
-      //   await apiFetchFacade()
-      // .getApiFetch(TestTest())
-      // .then((data) => {
-      //   console.log(data)
-      // })
-      // .catch((err) => {
-      //   console.log(err)
-      // });
     }
   
     const performLogin = (evt) => {

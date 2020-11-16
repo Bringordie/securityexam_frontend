@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Switch, Route, NavLink, useHistory } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import UserRegistrationPage from "./userregister";
+import { FriendsPostsURL } from "./settings";
 import UserLoginPage from "./userlogin";
 import UserHomePage from "./userhome";
 import FriendsPage from "./friends";
+import apiFetchFacade from "./apiFacade";
 
 
 function App({ apiFetchFacade, authFacade }) {
@@ -33,7 +35,7 @@ function App({ apiFetchFacade, authFacade }) {
       {loggedIn  && (
         <Switch>
           <Route exact path="/">
-            <Frontpage history={history} token={token} />
+            <Frontpage history={history} token={token} apiFetchFacade={apiFetchFacade} />
           </Route>
           <Route exact path="/home">
             <UserHomePage 
@@ -143,6 +145,68 @@ function Frontpage(props) {
   const token = props.token;
   const [username, setUsername] = useState("");
   const [role, setRole] = useState("");
+  const [friendsPosts, setFriendsPosts] = useState("");
+  const [response, setResponse] = useState("");
+
+  useEffect(() => {
+    const url = FriendsPostsURL();
+    if (token !== "") {
+    async function fetchDataPosts() {
+    await apiFetchFacade()
+      .getApiFetch(url)
+      .then((data) => {
+        setFriendsPosts(data);
+        setResponse("")
+      }).catch((res) =>
+      setResponse(res.status)
+    )};
+      fetchDataPosts()
+    }
+  }, []);
+
+  function FriendPostTable() {
+    return (
+      <div className="outerdiv">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Picture</th>
+              <th>Post</th>
+              </tr>
+          </thead>
+          <tbody>
+        {friendsPosts.map((friendPost, index) =>
+          <DisplayFriends friendPost={friendPost} key={index} />
+        )}
+        </tbody>
+        </table>
+      </div>
+    );
+  }
+
+  function DisplayFriends({friendPost}) {
+    return (
+      <tr>
+        <td>{friendPost.fullName}</td>
+        {/* This needs to be made into a picture */}
+        <td>{friendPost.profilePicture}</td>
+        {friendPost.posts.map((posts, index) =>
+          <DisplayFriendsPosts posts={posts} key={index} />
+        )}
+      </tr>
+    );
+  }
+
+  function DisplayFriendsPosts({posts}) {
+    return (
+      <>
+        <td>{posts.message}</td>
+        <td>{posts.postDate}</td>
+     </>
+    );
+  }
+
 
   useEffect(() => {
     if (token !== null && token !== undefined) {
@@ -161,6 +225,16 @@ function Frontpage(props) {
       {role && role.includes("user") && (
         <div>
           <h2>Welcome {username}</h2>
+        </div>
+      )}
+      {friendsPosts !== "" && (
+        <>
+          <FriendPostTable/>
+        </>
+      )}
+      {role && role.includes("user") && response === 404 && (
+        <div>
+          <p>None of your friends has posted anything yet</p>
         </div>
       )}
       {token === null && (

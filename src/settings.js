@@ -60,11 +60,18 @@ export function ViewFriendsURL() {
   return "http://localhost:8080/sem4/api/friend/friends";
 }
 
+export function ViewFriendRequestsURL() {
+  if (PROD) {
+    //return "https://cphfb.codes/sem4/api/friend/requests";
+  }
+  return "http://localhost:8080/sem4/api/friend/requests";
+}
+
 export function AddFriendRequestURL() {
   if (PROD) {
-    //return "https://cphfb.codes/sem4/api/friend/accept";
+    //return "https://cphfb.codes/sem4/api/friend/add";
   }
-  return "http://localhost:8080/sem4/api/friend/accept";
+  return "http://localhost:8080/sem4/api/friend/add";
 }
 
 export function SearchFriendURL() {

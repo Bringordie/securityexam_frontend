@@ -14,7 +14,7 @@ function apiFetchFacade() {
     return fetch(url, options).then(handleHttpErrors);
   };
 
-  const getApiFetchWBody = (Body, url) => {
+  const postApiFetchWBody = (url, Body) => {
     const options = facade.makeOptions("POST", true, Body);
     return fetch(url, options).then(handleHttpErrors);
   };
@@ -41,7 +41,7 @@ function apiFetchFacade() {
 
   return {
     getApiFetch,
-    getApiFetchWBody,
+    postApiFetchWBody,
     createUser,
     deleteApiCall,
     putApiCallWBody,

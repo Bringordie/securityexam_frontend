@@ -1,85 +1,92 @@
-import React, { useCallback, useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { OwnPostsURL, CreatePostURL } from "./settings";
-//import apiFetchFacade from "./apiFetchFacade";
-
 
 function UserHomePage({ apiFetchFacade }) {
   const [post, setPost] = useState("");
+  const [ownPosts, setOwnPosts] = useState("");
   const [code, setCode] = useState();
-  //const [response, setResponse] = useState();
 
   useEffect(() => {
-      //debugger;
     const url = OwnPostsURL();
-    apiFetchFacade()
+    async function fetchOwnPosts() {
+    await apiFetchFacade()
       .getApiFetch(url)
       .then((data) => {
-        setPost({ ...data });
-      });
-  }, [apiFetchFacade]);
+        setOwnPosts(data);
+      }).catch((err) => {
+        setCode(err.status);
+      })};
+      fetchOwnPosts()
+      console.log(ownPosts)
+  }, []);
 
-  const body = {
-    "post": post
-  };
+  
 
-  function makePost(event) {
-    event.preventDefault();
-    apiFetchFacade()
-      .getApiFetchWBody(body, CreatePostURL())
-      .then((data) => {
+  function makePost() {
+    const body = {
+      "post": post
+    };
+    //event.preventDefault();
+    const url = CreatePostURL()
+    async function createPosts() {
+    await apiFetchFacade()
+      .postApiFetchWBody(url, body)
+      .then(() => {
         setCode(200);
-        //setResponse({ ...data });
       })
-      .catch((err) => {
-        setCode(404);
+      .catch(() => {
+        alert('Something went wrong, please try again later or try to login again');
       });
+    }
+    createPosts()
   }
 
   const handleChange = (event) => {
+    event.preventDefault();
     setPost(event.target.value);
   };
 
-  function Table(props) {
-    if (
-      props === undefined ||
-      props === null ||
-      props.data === undefined
-    )
-      return <></>;
+  function OwnPostTable() {
+    if (ownPosts !== "") {
     return (
       <div className="outerdiv">
-        {props.data.map((post) =>
-          DisplayTest(post)
+        <table>
+          <thead>
+            <tr>
+              <th>Message</th>
+              </tr>
+          </thead>
+          <tbody>
+        {ownPosts.slice(0).reverse().map((posts, index) =>
+          <DisplayPosts posts={posts} key={index} />
         )}
+        </tbody>
+        </table>
       </div>
     );
+    } else if (ownPosts === "") {
+      return <></>
+    }
   }
 
-  function DisplayTest(
-    post
-  ) {
-
+  function DisplayPosts({posts}) {
     return (
-      <div className="col-lg-4 col-md-6" key={post.id}>
-        <div className="container">
-          <div className="post">
-            <p>
-              Message : {post.message} - Date:&nbsp;{post.postDate}
-            </p>
-          </div>
-        </div>
-      </div>
+      <tr>
+        <td>{posts.message}</td>
+        {/* This needs to be made into a picture */}
+        <td>{posts.postDate}</td>
+      </tr>
     );
   }
 
   return (
     <div>
       <div className="header2">
-        <h2>Test</h2>
+        <h2>Posts</h2>
       </div>
       <textarea
             className="inputfield"
-            onChange={handleChange}
+            onChange={(event) => handleChange(event)}
             type="text"
             name="comment"
             placeholder="How is your day?"
@@ -87,7 +94,7 @@ function UserHomePage({ apiFetchFacade }) {
             cols="70"
           ></textarea>
           <br></br>
-            <button onClick={(event) => makePost(event)}>
+            <button onClick={(event) => makePost()}>
               Post
             </button>
             {code === 200 && (
@@ -100,9 +107,13 @@ function UserHomePage({ apiFetchFacade }) {
           <p>Something went wrong, please try again later</p>
         </>
       )}
-      <Table
-        data={post.data}
-      />
+      {ownPosts !== "" && (
+        <>
+        <h2>My posts</h2>
+        <OwnPostTable/> 
+        </>
+      )}
+      
     </div>
   );
 }
