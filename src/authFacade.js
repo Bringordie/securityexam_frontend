@@ -23,9 +23,13 @@ function authFacade() {
     localStorage.removeItem("x-access-token");
   };
 
+  const address = async () => {
+    await fetch("https://api.ipify.org/?format=json").then((results) => {
+      return results.json();
+    });
+  };
 
   const login = (user, password) => {
-
     const options = makeOptions("POST", true, {
       username: user,
       password: password,
@@ -42,7 +46,7 @@ function authFacade() {
       method: method,
       headers: {
         "Content-Type": "application/json",
-        "Accept": "application/json",
+        Accept: "application/json",
       },
     };
     if (addToken && loggedIn()) {
@@ -59,7 +63,7 @@ function authFacade() {
       method: method,
       headers: {
         //"Content-Type": "multipart/form-data",
-        "Accept": "application/json",
+        Accept: "application/json",
       },
     };
     if (addToken && loggedIn()) {
@@ -78,6 +82,7 @@ function authFacade() {
     loggedIn,
     login,
     logout,
+    address,
   };
 }
 const facade = authFacade();

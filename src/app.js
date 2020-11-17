@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Switch, Route, NavLink, useHistory } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import UserRegistrationPage from "./userregister";
-import { FriendsPostsURL } from "./settings";
+import { FriendsPostsURL, Address } from "./settings";
 import UserLoginPage from "./userlogin";
 import UserHomePage from "./userhome";
 import FriendsPage from "./friends";
 import apiFetchFacade from "./apiFacade";
 import PasswordChange from "./changepw";
-
+import AdminPage from "./admin";
 
 function App({ apiFetchFacade, authFacade }) {
   let token = localStorage.getItem("x-access-token");
@@ -28,25 +28,29 @@ function App({ apiFetchFacade, authFacade }) {
     setLoggedIn(true);
   };
 
-
   return (
     <div className="App">
-      <Header loggedIn={loggedIn} logout={logout} token={token} setLogin={setLogin} />
+      <Header
+        loggedIn={loggedIn}
+        logout={logout}
+        token={token}
+        setLogin={setLogin}
+      />
 
-      {loggedIn  && (
+      {loggedIn && (
         <Switch>
           <Route exact path="/">
-            <Frontpage history={history} token={token} apiFetchFacade={apiFetchFacade} />
+            <Frontpage
+              history={history}
+              token={token}
+              apiFetchFacade={apiFetchFacade}
+            />
           </Route>
           <Route exact path="/home">
-            <UserHomePage 
-            apiFetchFacade={apiFetchFacade}
-            />
+            <UserHomePage apiFetchFacade={apiFetchFacade} />
           </Route>
           <Route exact path="/friends">
-            <FriendsPage 
-            apiFetchFacade={apiFetchFacade}
-            />
+            <FriendsPage apiFetchFacade={apiFetchFacade} />
           </Route>
           <Route>
             <NoMatch />
@@ -61,20 +65,25 @@ function App({ apiFetchFacade, authFacade }) {
               <Frontpage history={history} token={token} />
             </Route>
             <Route path="/login">
-            <UserLoginPage
+              <UserLoginPage
                 apiFetchFacade={apiFetchFacade}
                 authFacade={authFacade}
                 setLogin={setLogin}
               />
             </Route>
             <Route path="/registration">
-              <UserRegistrationPage
-                apiFetchFacade={apiFetchFacade}
-              />
+              <UserRegistrationPage apiFetchFacade={apiFetchFacade} />
             </Route>
             <Route path="/changepw">
-                <PasswordChange apiFetchFacade={apiFetchFacade} />
-              </Route>
+              <PasswordChange apiFetchFacade={apiFetchFacade} />
+            </Route>
+            <Route exact path="/admin">
+              <AdminPage
+                apiFetchFacade={apiFetchFacade}
+                token={token}
+                authFacade={authFacade}
+              />
+            </Route>
             <Route>
               <NoMatch />
             </Route>
@@ -85,33 +94,32 @@ function App({ apiFetchFacade, authFacade }) {
   );
 }
 
-
 function Header({ loggedIn, logout, token }) {
   return (
     <div>
       <ul className="header">
-        {loggedIn && token &&(
+        {loggedIn && token && (
           <>
-          <li>
-          <NavLink exact activeClassName="active" to="/">
-            Frontpage
-          </NavLink>
-        </li>
-          <li>
-          <NavLink exact activeClassName="active" to="/home">
-            Home
-          </NavLink>
-        </li>
-        <li>
-          <NavLink exact activeClassName="active" to="/friends">
-            Friends
-          </NavLink>
-        </li>
-          <li>
-            <NavLink activeClassName="active" onClick={logout} to="/login">
-              Logout
-            </NavLink>
-          </li>
+            <li>
+              <NavLink exact activeClassName="active" to="/">
+                Frontpage
+              </NavLink>
+            </li>
+            <li>
+              <NavLink exact activeClassName="active" to="/home">
+                Home
+              </NavLink>
+            </li>
+            <li>
+              <NavLink exact activeClassName="active" to="/friends">
+                Friends
+              </NavLink>
+            </li>
+            <li>
+              <NavLink activeClassName="active" onClick={logout} to="/login">
+                Logout
+              </NavLink>
+            </li>
           </>
         )}
         {!token && (
@@ -127,10 +135,10 @@ function Header({ loggedIn, logout, token }) {
               </NavLink>
             </li>
             <li>
-                <NavLink activeClassName="active" to="/changepw">
-                  Change Password
-                </NavLink>
-              </li>
+              <NavLink activeClassName="active" to="/changepw">
+                Change Password
+              </NavLink>
+            </li>
           </>
         )}
       </ul>
@@ -160,16 +168,16 @@ function Frontpage(props) {
   useEffect(() => {
     const url = FriendsPostsURL();
     if (token !== "") {
-    async function fetchDataPosts() {
-    await apiFetchFacade()
-      .getApiFetch(url)
-      .then((data) => {
-        setFriendsPosts(data);
-        setResponse("")
-      }).catch((res) =>
-      setResponse(res.status)
-    )};
-      fetchDataPosts()
+      async function fetchDataPosts() {
+        await apiFetchFacade()
+          .getApiFetch(url)
+          .then((data) => {
+            setFriendsPosts(data);
+            setResponse("");
+          })
+          .catch((res) => setResponse(res.status));
+      }
+      fetchDataPosts();
     }
   }, []);
 
@@ -182,46 +190,45 @@ function Frontpage(props) {
               <th>Name</th>
               <th>Picture</th>
               <th>Post</th>
-              </tr>
+            </tr>
           </thead>
           <tbody>
-        {friendsPosts.map((friendPost, index) =>
-          <DisplayFriends friendPost={friendPost} key={index} />
-        )}
-        </tbody>
+            {friendsPosts.map((friendPost, index) => (
+              <DisplayFriends friendPost={friendPost} key={index} />
+            ))}
+          </tbody>
         </table>
       </div>
     );
   }
 
-  function DisplayFriends({friendPost}) {
+  function DisplayFriends({ friendPost }) {
     return (
       <tr>
         <td>{friendPost.fullName}</td>
         {/* This needs to be made into a picture */}
         <td>{friendPost.profilePicture}</td>
-        {friendPost.posts.map((posts, index) =>
+        {friendPost.posts.map((posts, index) => (
           <DisplayFriendsPosts posts={posts} key={index} />
-        )}
+        ))}
       </tr>
     );
   }
 
-  function DisplayFriendsPosts({posts}) {
+  function DisplayFriendsPosts({ posts }) {
     return (
       <>
         <td>{posts.message}</td>
         <td>{posts.postDate}</td>
-     </>
+      </>
     );
   }
-
 
   useEffect(() => {
     if (token !== null && token !== undefined) {
       var decoded = jwt_decode(token);
       setUsername(Capatialize(decoded.username));
-      setRole((decoded.role));
+      setRole(decoded.role);
     }
   }, [token]);
   return (
@@ -230,7 +237,7 @@ function Frontpage(props) {
         <div>
           <h2>Admin page</h2>
         </div>
-      )} 
+      )}
       {role && role.includes("user") && (
         <div>
           <h2>Welcome {username}</h2>
@@ -238,7 +245,7 @@ function Frontpage(props) {
       )}
       {friendsPosts !== "" && (
         <>
-          <FriendPostTable/>
+          <FriendPostTable />
         </>
       )}
       {role && role.includes("user") && response === 404 && (

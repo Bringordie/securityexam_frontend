@@ -28,7 +28,6 @@ export function ChangePWURL() {
   return "http://localhost:8080/sem4/api/login/reset/password";
 }
 
-
 //Post resource//
 export function OwnPostsURL() {
   if (PROD) {
@@ -50,7 +49,6 @@ export function FriendsPostsURL() {
   }
   return "http://localhost:8080/sem4/api/post/friends";
 }
-
 
 //Friends resource//
 export function ViewFriendsURL() {
@@ -102,11 +100,10 @@ export function RemoveFriendURL() {
   return "http://localhost:8080/sem4/api/friend/remove";
 }
 
-
-
-export function TestTest() {
+export function Address() {
   if (PROD) {
-    //return "https://cphfb.codes/sem4/api/friend/remove";
+    //return "https://cphfb.codes/sem4/api/address";
   }
-  return "http://localhost:8080/sem4/api/admin/users";
+  // return "https://ipgeolocation.abstractapi.com/v1/?api_key=9130f6be4a79468680afcb292745396e";
+  return "https://api.ipify.org/?format=jsonp?callback=?";
 }
