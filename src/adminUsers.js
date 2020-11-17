@@ -13,9 +13,10 @@ export default function AdminGetUsers({
   useEffect(() => {
     const url = AdminGetUsersURL();
     if (token !== "") {
-      async function fetchUserData() {
-        await apiFetchFacade()
-          .getApiFetch(url)
+      function fetchUserData() {
+        apiFetchFacade()
+          //Should be getApiFetchAdmin something is wrong
+          .getApiFetchAdmin(url)
           .then((data) => {
             setUsersData(data);
             setResponse("");
@@ -63,6 +64,16 @@ export default function AdminGetUsers({
 
   return (
     <div>
+      {response === 400 && (
+        <>
+          <p>Something went wrong, please try again later</p>
+        </>
+      )}
+      {response === 401 && (
+        <>
+          <p>You do not have access to do this. Try and log out and in again</p>
+        </>
+      )}
       <UserTable />
     </div>
   );

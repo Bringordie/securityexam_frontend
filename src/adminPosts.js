@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { AdminGetPostsURL } from "./settings";
 
-export default function AdminGetPosts({
-  apiFetchFacade,
-  authFacade,
-  setLogin,
-  token,
-}) {
+export default function AdminGetPosts({ apiFetchFacade, token }) {
   const [postData, setPostData] = useState("");
   const [response, setResponse] = useState("");
 
@@ -15,7 +10,8 @@ export default function AdminGetPosts({
     if (token !== "") {
       async function fetchUserData() {
         await apiFetchFacade()
-          .getApiFetch(url)
+          //Should be getApiFetchAdmin something is wrong
+          .getApiFetchAdmin(url)
           .then((data) => {
             setPostData(data);
             setResponse("");
@@ -60,6 +56,16 @@ export default function AdminGetPosts({
 
   return (
     <div>
+      {response === 400 && (
+        <>
+          <p>Something went wrong, please try again later</p>
+        </>
+      )}
+      {response === 401 && (
+        <>
+          <p>You do not have access to do this. Try and log out and in again</p>
+        </>
+      )}
       <PostTable />
     </div>
   );

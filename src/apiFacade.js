@@ -10,7 +10,11 @@ function apiFetchFacade() {
 
   const getApiFetch = (url) => {
     const options = facade.makeOptions("GET", true);
-    //const options = facade("GET", true);
+    return fetch(url, options).then(handleHttpErrors);
+  };
+
+  const getApiFetchAdmin = (url) => {
+    const options = facade.makeOptionsAdmin("GET", true);
     return fetch(url, options).then(handleHttpErrors);
   };
 
@@ -46,6 +50,7 @@ function apiFetchFacade() {
     deleteApiCall,
     putApiCallWBody,
     putApiCall,
+    getApiFetchAdmin,
   };
 }
 
