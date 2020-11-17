@@ -1,4 +1,4 @@
-import { LoginURLUser } from "./settings";
+import { LoginURLUser, AdminLoginURL } from "./settings";
 
 function handleHttpErrors(res) {
   if (!res.ok) {
@@ -35,6 +35,18 @@ function authFacade() {
       password: password,
     });
     return fetch(LoginURLUser(), options)
+      .then(handleHttpErrors)
+      .then((res) => {
+        setToken(res.token);
+      });
+  };
+
+  const adminLogin = (user, password) => {
+    const options = makeOptions("POST", true, {
+      username: user,
+      password: password,
+    });
+    return fetch(AdminLoginURL(), options)
       .then(handleHttpErrors)
       .then((res) => {
         setToken(res.token);
@@ -83,6 +95,7 @@ function authFacade() {
     login,
     logout,
     address,
+    adminLogin,
   };
 }
 const facade = authFacade();

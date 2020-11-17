@@ -2,16 +2,19 @@ import React, { useState, useEffect } from "react";
 import { Switch, Route, NavLink, useHistory } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import UserRegistrationPage from "./userregister";
-import { FriendsPostsURL, Address } from "./settings";
+import { FriendsPostsURL } from "./settings";
 import UserLoginPage from "./userlogin";
 import UserHomePage from "./userhome";
 import FriendsPage from "./friends";
 import apiFetchFacade from "./apiFacade";
 import PasswordChange from "./changepw";
-import AdminPage from "./admin";
+import AdminPage from "./adminLogin";
+import AdminGetPosts from "./adminPosts";
+import AdminGetUsers from "./adminUsers";
 
 function App({ apiFetchFacade, authFacade }) {
   let token = localStorage.getItem("x-access-token");
+  const [role, setRole] = useState("");
 
   const [loggedIn, setLoggedIn] = useState(
     token !== undefined && token !== null
@@ -22,11 +25,32 @@ function App({ apiFetchFacade, authFacade }) {
   const logout = () => {
     authFacade.logout();
     setLoggedIn(false);
+    updateRoles();
   };
+
+  function updateRoles() {
+    token = localStorage.getItem("x-access-token");
+    if (token) {
+      var decoded = jwt_decode(token);
+      setRole(decoded.role);
+    } else {
+      setRole("");
+    }
+  }
 
   const setLogin = () => {
     setLoggedIn(true);
+    updateRoles();
   };
+
+  useEffect(() => {
+    token = localStorage.getItem("x-access-token");
+    if (token) {
+      var decoded = jwt_decode(token);
+      setLoggedIn(true);
+      setRole(decoded.role);
+    }
+  }, []);
 
   return (
     <div className="App">
@@ -35,9 +59,10 @@ function App({ apiFetchFacade, authFacade }) {
         logout={logout}
         token={token}
         setLogin={setLogin}
+        role={role}
       />
 
-      {loggedIn && (
+      {loggedIn && !role.includes("admin") && (
         <Switch>
           <Route exact path="/">
             <Frontpage
@@ -90,15 +115,37 @@ function App({ apiFetchFacade, authFacade }) {
           </Switch>
         </>
       )}
+      {role.includes("admin") && (
+        <>
+          <Switch>
+            <Route exact path="/">
+              <Frontpage history={history} token={token} />
+            </Route>
+            <Route path="/admin/users">
+              <AdminGetUsers
+                apiFetchFacade={apiFetchFacade}
+                authFacade={authFacade}
+                token={token}
+              />
+            </Route>
+            <Route path="/admin/posts">
+              <AdminGetPosts apiFetchFacade={apiFetchFacade} />
+            </Route>
+            <Route>
+              <NoMatch />
+            </Route>
+          </Switch>
+        </>
+      )}
     </div>
   );
 }
 
-function Header({ loggedIn, logout, token }) {
+function Header({ loggedIn, logout, token, role }) {
   return (
     <div>
       <ul className="header">
-        {loggedIn && token && (
+        {loggedIn && token && !role.includes("admin") && (
           <>
             <li>
               <NavLink exact activeClassName="active" to="/">
@@ -137,6 +184,30 @@ function Header({ loggedIn, logout, token }) {
             <li>
               <NavLink activeClassName="active" to="/changepw">
                 Change Password
+              </NavLink>
+            </li>
+          </>
+        )}
+        {token && role.includes("admin") && (
+          <>
+            <li>
+              <NavLink exact activeClassName="active" to="/">
+                Frontpage
+              </NavLink>
+            </li>
+            <li>
+              <NavLink activeClassName="active" to="/admin/users">
+                Get all users
+              </NavLink>
+            </li>
+            <li>
+              <NavLink activeClassName="active" to="/admin/posts">
+                Get all posts
+              </NavLink>
+            </li>
+            <li>
+              <NavLink activeClassName="active" onClick={logout} to="/login">
+                Logout
               </NavLink>
             </li>
           </>
@@ -243,7 +314,7 @@ function Frontpage(props) {
           <h2>Welcome {username}</h2>
         </div>
       )}
-      {friendsPosts !== "" && (
+      {friendsPosts !== "" && !role.includes("admin") && (
         <>
           <FriendPostTable />
         </>

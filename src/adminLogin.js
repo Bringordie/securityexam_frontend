@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
-export default function LogIn({ apiFetchFacade, authFacade, setLogin }) {
+export default function AdminPage({ apiFetchFacade, authFacade, setLogin }) {
   const init = { username: "", password: "" };
   const [loginCredentials, setLoginCredentials] = useState(init);
   const history = useHistory();
 
   const login = (user, pass) => {
     authFacade
-      .login(user, pass)
+      .adminLogin(user, pass)
       //This line can probably be removed.
-      //.then((res) => setLogin)
+      .then((res) => setLogin)
       .then(() => {
         history.push("/");
         //A temp fix so the user dosen't need to F5

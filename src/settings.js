@@ -100,10 +100,33 @@ export function RemoveFriendURL() {
   return "http://localhost:8080/sem4/api/friend/remove";
 }
 
-export function Address() {
+export function AddressURL() {
   if (PROD) {
     //return "https://cphfb.codes/sem4/api/address";
   }
   // return "https://ipgeolocation.abstractapi.com/v1/?api_key=9130f6be4a79468680afcb292745396e";
   return "https://api.ipify.org/?format=jsonp?callback=?";
+}
+
+// Admin
+
+export function AdminLoginURL() {
+  if (PROD) {
+    //return "https://cphfb.codes/sem4/api/login/admin";
+  }
+  return "http://localhost:8080/sem4/api/login/admin";
+}
+
+export function AdminGetUsersURL() {
+  if (PROD) {
+    //return "https://cphfb.codes/sem4/api/admin/users";
+  }
+  return "http://localhost:8080/sem4/api/admin/users";
+}
+
+export function AdminGetPostsURL() {
+  if (PROD) {
+    //return "https://cphfb.codes/sem4/api/admin/posts";
+  }
+  return "http://localhost:8080/sem4/api/admin/posts";
 }
