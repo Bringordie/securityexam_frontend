@@ -1,4 +1,4 @@
-const PROD = true;
+const PROD = false;
 
 export function LoginURLUser() {
   if (PROD) {

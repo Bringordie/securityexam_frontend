@@ -34,7 +34,7 @@ export default function UserRegistrationPage({ apiFetchFacade }) {
       formData.append("secret", user.secret);
       formData.append("file", selectedFile);
       apiFetchFacade()
-        .createUser(url, true, formData)
+        .createUser(url, formData)
         .then((data) => {
           UserLoginPage.loginCallback(user.username, user.password);
         })

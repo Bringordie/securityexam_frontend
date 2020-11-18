@@ -100,7 +100,7 @@ function authFacade() {
     var opts = {
       method: method,
       headers: {
-        //"Content-Type": "multipart/form-data",
+        "Content-Type": "multipart/form-data",
         Accept: "application/json",
       },
     };
