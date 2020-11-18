@@ -15,8 +15,8 @@ export default function AdminGetUsers({
     if (token !== "") {
       function fetchUserData() {
         apiFetchFacade()
-          //Should be getApiFetchAdmin something is wrong
-          .getApiFetchAdmin(url)
+          //Should be getApiFetchAdmin something is wrong here
+          .getApiFetch(url)
           .then((data) => {
             setUsersData(data);
             setResponse("");

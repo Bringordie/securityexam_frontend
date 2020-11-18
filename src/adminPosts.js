@@ -10,8 +10,8 @@ export default function AdminGetPosts({ apiFetchFacade, token }) {
     if (token !== "") {
       async function fetchUserData() {
         await apiFetchFacade()
-          //Should be getApiFetchAdmin something is wrong
-          .getApiFetchAdmin(url)
+          //Should be getApiFetchAdmin something is wrong here
+          .getApiFetch(url)
           .then((data) => {
             setPostData(data);
             setResponse("");
