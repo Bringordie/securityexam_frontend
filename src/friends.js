@@ -7,6 +7,7 @@ import {
   RemoveFriendURL,
   AcceptFriendRequestURL,
   RemoveFriendRequestURL,
+  PictureURL,
 } from "./settings";
 //import apiFetchFacade from "./apiFetchFacade";
 
@@ -216,11 +217,13 @@ function Friends({ apiFetchFacade }) {
   }
 
   function DisplaySearch({ search }) {
+    const pictureURLLink = PictureURL() + search.profilePicture + ".png";
     return (
       <tr>
         <td>{search.fullName}</td>
         {/* This needs to be made into a picture */}
-        <td>{search.profilePicture}</td>
+        {/* <td>{search.profilePicture}</td> */}
+        <img src={pictureURLLink} width="200" height="100" />
         <td>
           <button onClick={(event) => addFriendHandler(search.userID)}>
             Add to friend
@@ -251,11 +254,13 @@ function Friends({ apiFetchFacade }) {
   }
 
   function DisplayFriends({ friends }) {
+    const pictureURLLink = PictureURL() + friends.picture + ".png";
     return (
       <tr>
         <td>{friends.fullName}</td>
         {/* This needs to be made into a picture */}
-        <td>{friends.picture}</td>
+        {/* <td>{friends.picture}</td> */}
+        <img src={pictureURLLink} width="200" height="100" />
         <td>
           <button onClick={(event) => removeFriendHandler(friends.friendID)}>
             Remove friend
@@ -286,11 +291,13 @@ function Friends({ apiFetchFacade }) {
   }
 
   function DisplayFriendsRequests({ friendsReq }) {
+    const pictureURLLink = PictureURL() + friendsReq.picture + ".png";
     return (
       <tr>
         <td>{friendsReq.fullName}</td>
         {/* This needs to be made into a picture */}
-        <td>{friendsReq.picture}</td>
+        {/* <td>{friendsReq.picture}</td> */}
+        <img src={pictureURLLink} width="200" height="100" />
         <td>
           <button
             onClick={(event) => acceptFriendReqHandler(friendsReq.friendID)}

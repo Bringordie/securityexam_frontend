@@ -36,7 +36,8 @@ export default function UserRegistrationPage({ apiFetchFacade }) {
       apiFetchFacade()
         .createUser(url, formData)
         .then((data) => {
-          UserLoginPage.loginCallback(user.username, user.password);
+          //UserLoginPage.loginCallback(user.username, user.password);
+          setResponse(200);
         })
         .catch((err) => {
           setResponse(err.status);
@@ -81,6 +82,9 @@ export default function UserRegistrationPage({ apiFetchFacade }) {
             onChange={(event) => changeHandler(event)}
           />
           <br></br>
+          <b>Minimum eight characters, at least one letter and one number</b>
+          <br></br>
+          <br></br>
           Secret password:{" "}
           <input
             type="password"
@@ -100,11 +104,13 @@ export default function UserRegistrationPage({ apiFetchFacade }) {
             onChange={(e) => handlePicture(e)}
           />
         </form>
+        <b>Picture must be a .png picture</b>
+        <br></br>
       </div>
       <button onClick={(event) => submitHandler(event)}>Sign Up</button>
       {response === 200 && (
         <>
-          <p>Account has successfully been created</p>
+          <p>Account was successfully created</p>
         </>
       )}
       {response === 400 && (

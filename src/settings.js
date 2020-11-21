@@ -1,4 +1,4 @@
-const PROD = false;
+const PROD = true;
 
 export function LoginURLUser() {
   if (PROD) {
@@ -118,4 +118,8 @@ export function AdminGetPostsURL() {
     return "https://cphfb.codes/sem4/api/admin/posts";
   }
   return "http://localhost:8080/sem4/api/admin/posts";
+}
+
+export function PictureURL() {
+  return "https://cphfb.codes/pictures/";
 }

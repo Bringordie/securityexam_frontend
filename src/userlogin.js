@@ -36,8 +36,8 @@ export default function LogIn({ apiFetchFacade, authFacade, setLogin }) {
     <div>
       <h2>Login</h2>
       <form onChange={onChange}>
-        <input placeholder="User Name" id="username" required />
-        <input placeholder="Password" id="password" required />
+        <input placeholder="User Name" id="username" type="text" required />
+        <input placeholder="Password" id="password" type="password" required />
         <button onClick={performLogin}>Login</button>
       </form>
     </div>

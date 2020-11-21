@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { AdminGetUsersURL } from "./settings";
+import { AdminGetUsersURL, PictureURL } from "./settings";
 
 export default function AdminGetUsers({
   apiFetchFacade,
@@ -52,12 +52,14 @@ export default function AdminGetUsers({
   }
 
   function DisplayUsers({ users }) {
+    const pictureURLLink = PictureURL() + users.profilePicture + ".png";
     return (
       <tr>
         <td>{users.userID}</td>
         <td>{users.fullName}</td>
         {/* This needs to be made into a picture */}
-        <td>{users.profilePicture}</td>
+        {/* <td>{users.profilePicture}</td> */}
+        <img src={pictureURLLink} width="200" height="100" />
       </tr>
     );
   }
