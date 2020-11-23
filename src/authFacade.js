@@ -34,8 +34,8 @@ function authFacade() {
     // });
   };
 
-  const login = (user, password) => {
-    const options = makeOptions("POST", true, {
+  const login = async (user, password) => {
+    const options = await makeOptionsUserLogin(true, {
       username: user,
       password: password,
     });
@@ -47,7 +47,7 @@ function authFacade() {
   };
 
   const adminLogin = async (user, password) => {
-    const options = await makeOptionsAdmin("POST", true, {
+    const options = await makeOptionsAdmin(true, {
       username: user,
       password: password,
     });
@@ -64,6 +64,27 @@ function authFacade() {
 
     var opts = {
       method: method,
+      headers: {
+        "Content-Type": "application/json",
+        ip_address: ip_address,
+        Accept: "application/json",
+      },
+    };
+    if (addToken && loggedIn()) {
+      opts.headers["x-access-token"] = getToken();
+    }
+    if (body) {
+      opts.body = JSON.stringify(body);
+    }
+    return opts;
+  };
+
+  const makeOptionsUserLogin = async (addToken, body) => {
+    const ip_addressObj = await address();
+    const ip_address = ip_addressObj["ip"];
+    debugger;
+    var opts = {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         ip_address: ip_address,
@@ -123,6 +144,7 @@ function authFacade() {
     address,
     adminLogin,
     makeOptionsAdmin,
+    makeOptionsUserLogin,
   };
 }
 const facade = authFacade();

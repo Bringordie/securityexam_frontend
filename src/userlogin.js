@@ -5,6 +5,7 @@ export default function LogIn({ apiFetchFacade, authFacade, setLogin }) {
   const init = { username: "", password: "" };
   const [loginCredentials, setLoginCredentials] = useState(init);
   const history = useHistory();
+  const [response, setResponse] = useState();
 
   const login = (user, pass) => {
     authFacade
@@ -16,9 +17,15 @@ export default function LogIn({ apiFetchFacade, authFacade, setLogin }) {
         //A temp fix so the user dosen't need to F5
         history.go(0);
       })
-      .catch((res) =>
-        alert("Status code : " + res.status + " Wrong username or password.")
-      );
+      .catch((res) => {
+        if (res.status === 429) {
+          alert(
+            "You have reached the maximum tries, please wait 10 minutes to try again."
+          );
+        } else {
+          alert("Status code : " + res.status + " Wrong username or password.");
+        }
+      });
   };
 
   const performLogin = (evt) => {
